@@ -1,2 +1,2 @@
-# motion-detector
-motion detection using Python and OpenCV
+# Motion-Detector
+Motion detection using Python and OpenCV
