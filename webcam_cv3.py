@@ -66,7 +66,8 @@ cv2.createTrackbar(colorMode, 'trackbars', 1, 1, callBack)
 cv2.createTrackbar(pauseSwitch, 'trackbars', 0,1,callBack)
 cv2.createTrackbar(greyMode, 'trackbars', 1, 1, callBack)
 cv2.createTrackbar(binaryMode, 'trackbars', 1, 1, callBack)
-cv2.createTrackbar(recordSwitch, 'trackbars', 0, 1, callBack)
+if len(sys.argv) == 2:
+    cv2.createTrackbar(recordSwitch, 'trackbars', 0, 1, callBack)
 cv2.createTrackbar(mouthSwitch, 'trackbars', 0, 1, callBack)
 cv2.createTrackbar(noseSwitch, 'trackbars', 0, 1, callBack)
 
@@ -172,8 +173,7 @@ while True:
             msg = MIMEMultipart()
 
             fromaddr = "pythonWebcamCV@gmail.com"
-            #enter your email address
-            toaddr = "address@email.com"
+            toaddr = sys.argv[1]#"byu014@ucr.edu"
  
             msg['From'] = fromaddr
             msg['To'] = toaddr
@@ -184,7 +184,6 @@ while True:
             msg.attach(MIMEText(body, 'plain'))
              
             filename = videoName
-            #file path to this file
             attachment = open("/Users/sky/desktop/Webcam-Face-Detect/" + videoName, "rb")
              
             part = MIMEBase('application', 'octet-stream')
@@ -196,8 +195,7 @@ while True:
              
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            #enter your email password
-            server.login(fromaddr, "email password")
+            server.login(fromaddr, "motiondetector")
             text = msg.as_string()
             server.sendmail(fromaddr, toaddr, text)
             server.quit()
@@ -206,7 +204,7 @@ while True:
     
 
     # Draw a rectangle around the faces
-    cv2.line(frame, (middleLine,0), (middleLine,height), (150, 0, 150), 2)
+    #cv2.line(frame, (middleLine,0), (middleLine,height), (150, 0, 150), 2)
     faces = faceCascade.detectMultiScale( gray, scaleFactor=1.1, minNeighbors=10, minSize=(30, 30))
     eye = eyeCascade.detectMultiScale(gray, scaleFactor = 1.3, minNeighbors = 10, minSize=(30,30))
     nose = noseCascade.detectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 55, minSize = (30,30), maxSize = (85,80))
@@ -235,6 +233,7 @@ while True:
 
     BinarizationThreshold = binaryStatus
     if faceStatus == 1:
+        counter = len(faces)
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             xCenter = int((x+x+w)/2)
@@ -242,8 +241,8 @@ while True:
             objectCenter = (xCenter,yCenter)
             cv2.circle(frame, objectCenter, 1, (0, 0, 0), 3)
 
-            if checkCrossLine(xCenter ,middleLine):
-                counter += 1
+            #if checkCrossLine(xCenter ,middleLine):
+                #counter += 1
     if eyeStatus == 1:
         for(ex,ey,ew,eh) in eye:
             cv2.rectangle(frame, (ex,ey), (ex+ew, ey+eh), (100,0,0), 2)
